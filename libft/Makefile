@@ -51,7 +51,8 @@ ft_putstr_fd\
 ft_putendl_fd\
 ft_putnbr_fd\
 ft_memmove\
-get_next_line
+get_next_line\
+ft_strcmp
 
 SRCS_DIR = ./
 SRCS = $(addprefix $(SRCS_DIR), $(addsuffix .c, $(FILES)))

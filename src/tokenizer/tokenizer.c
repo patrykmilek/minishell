@@ -55,7 +55,8 @@ static void	handle_word_token(t_token **tokens, int *count, char *line, int *i)
 	(*count)++;
 }
 
-static void	handle_quoted_token(t_token **tokens, int *count, char *line, int *i)
+static void	handle_quoted_token(t_token **tokens,
+	int *count, char *line, int *i)
 {
 	tokens[*count] = malloc(sizeof(t_token));
 	if (!tokens[*count])
@@ -90,5 +91,6 @@ t_token	**tokenize_input(char *line)
 			handle_word_token(tokens, &count, line, &i);
 	}
 	tokens[count] = NULL;
+	link_tokens(tokens);
 	return (tokens);
 }

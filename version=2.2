@@ -1,0 +1,47 @@
+version 2.2
+dodałem wsyztskie builtins ktore działaja na tokenach i sa przystosowane do rozbudowy o nowe funkjonalnosci takie jak pipe itp.
+dodałem te funkcje do tokenizera która dodaje w struc t_env pointer do *next
+wszystko smiga fajnie pieknie oprocz export VAR="test string". Tokenizer traktuje VAR="value jako jeden parametr i string" jako drugi
+wiec trzeba zmienić aby traktował VAR="test string" jako jeden argument. najprawdopodobniej trzeba dodac logike do tokenizera ktora patrzy czy przed " jest =
+i jesli sie pojawia to traktuje calosc jako jeden argument
+nie zwracaj uwagi na za dluga funkcje execute_commands() - ona bedzie zmieniona jak wprowadze całą funkcjonalnosc bo i tak trzeba bedzie ja przebudować i dostosować do nowego kodu.
+
+co trzeba zrobic w builtins:
+	-naprawić VAR="test string" - w tokenizer
+	-dodac do echo wyswietlanie var w srodowisku np "echo &HOME"
+
+jakbys chcial przetestowac jak to dziala to tu masz funkcje
+
+echo:
+	echo Hello, World!
+	echo
+	echo -n "No new line"
+	echo -n Hello -n World
+
+pwd:
+	pwd
+
+cd:
+	cd ..
+	cd /
+	cd ~
+	cd -
+	cd "/path/path/path"
+	cd nazwa_folderu
+	cd zla_nazwa
+
+env:
+	env
+
+export:
+	export TEST_VAR=TEST_VALUE
+	export TEST_VAR
+	export bledna_nazwa - kazda nazwa musi zaczyac sie litera lub _ i nie posiadac znakow specjalnych
+	export - pokazuje env posortowane;
+
+unset:
+	unset NAZWA_VAR
+	unset NAZWA_VAR NAZWA_VAR - usuwanie kilku
+
+exit:
+	exit

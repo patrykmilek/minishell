@@ -1,40 +1,38 @@
-#include "../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/17 22:39:36 by kubapyciarz       #+#    #+#             */
+/*   Updated: 2024/12/17 22:39:37 by kubapyciarz      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static void	check_for_cmd_arg(char *arg, int *isnewline, int *argsiter)
-{
-	*isnewline = 0;
-	if (ft_strncmp(arg, "-n", 2) == 0)
-	{
-		*isnewline = 1;
-		*argsiter = 2;
-	}
-	else
-		*argsiter = 1;
-}
+#include "../includes/minishell.h"
 
 int	do_echo(char **args)
 {
-	int	argsiter;
-	int	isnewline;
+	int	args_count;
+	int	is_new_line;
 
-	if (count_args(args) == 1)
+	is_new_line = 1;
+	args_count = 0;
+	if (args && args[0] && ft_strncmp(args[0],
+			"-n", 2) == 0 && args[0][2] == '\0')
 	{
-		ft_putchar_fd('\n', STDERR_FILENO);
-		return (1);
+		is_new_line = 0;
+		args_count = 1;
 	}
-	else
+	while (args[args_count] != NULL)
 	{
-		check_for_cmd_arg(args[1], &isnewline, &argsiter);
-		while (args[argsiter])
-		{
-			ft_putstr_fd(args[argsiter], STDERR_FILENO);
-			if (args[argsiter + 1])
-				ft_putchar_fd(' ', STDERR_FILENO);
-			argsiter ++;
-		}
-		if (isnewline == 0)
-			ft_putchar_fd('\n', STDERR_FILENO);
-		return (1);
+		ft_putstr_fd(args[args_count], STDOUT_FILENO);
+		if (args[args_count + 1])
+			ft_putchar_fd(' ', STDOUT_FILENO);
+		args_count++;
 	}
-	return (0);
+	if (is_new_line == 1)
+		ft_putchar_fd('\n', STDOUT_FILENO);
+	return (1);
 }

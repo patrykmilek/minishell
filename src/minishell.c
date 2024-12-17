@@ -1,31 +1,71 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/17 22:39:10 by kubapyciarz       #+#    #+#             */
+/*   Updated: 2024/12/17 22:39:11 by kubapyciarz      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 #include <stdio.h>
-#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-// Pomocnicza funkcja do wyświetlania tokenów
-void display_tokens(t_token **tokens)
+t_shell	*init_shell(void)
 {
-	int i;
+	t_shell	*shell;
+
+	shell = malloc(sizeof(t_shell));
+	if (!shell)
+		return (NULL);
+	shell->env = NULL;
+	return (shell);
+}
+
+static void	free_tokens(t_token **tokens)
+{
+	int	i;
 
 	i = 0;
-	printf("=== Tokenized Input ===\n");
 	while (tokens[i])
 	{
-		printf("Token %d: Type = %d, Value = \"%s\"\n",
-			i, tokens[i]->type, tokens[i]->value);
+		free(tokens[i]->value);
+		free(tokens[i]);
 		i++;
+	}
+	free(tokens);
+}
+
+static void	free_env(t_env *env)
+{
+	t_env	*temp;
+
+	while (env)
+	{
+		temp = env;
+		env = env->next;
+		free(temp->key);
+		free(temp->value);
+		free(temp);
 	}
 }
 
-int main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	char	*input;
+	t_shell	shell;
 	t_token	**tokens;
 
-	printf("Welcome to MiniShell Tokenizer Test!\n");
+	(void)argc;
+	(void)argv;
+	init_shell();
+	init_env(&shell, envp);
 	while (1)
 	{
-		// Wyświetlenie prompta
 		write(1, "minishell> ", 11);
 		input = get_next_line(STDIN_FILENO);
 		if (!input)
@@ -33,22 +73,18 @@ int main(void)
 			write(1, "exit\n", 5);
 			break ;
 		}
-		trim_newline(input); // Usunięcie znaku nowej linii
-
-		// Tokenizacja inputu
+		trim_newline(input);
 		tokens = tokenize_input(input);
-		if (tokens)
-		{
-			display_tokens(tokens); // Wyświetlenie tokenów
-		}
-		else
-		{
-			printf("Error: Tokenization failed\n");
-		}
-
-		// Zwolnienie pamięci
 		free(input);
-		
+		if (!tokens)
+		{
+			ft_putendl_fd("Error: Tokenization failed", STDERR_FILENO);
+			continue ;
+		}
+		if (execute_commands(&shell, tokens) == 2)
+			break ;
+		free_tokens(tokens);
 	}
+	free_env(shell.env);
 	return (0);
 }

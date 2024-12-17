@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jpyciarz <jpyciarz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 12:23:57 by jpyciarz          #+#    #+#             */
-/*   Updated: 2024/03/12 13:25:48 by jpyciarz         ###   ########.fr       */
+/*   Updated: 2024/12/17 22:39:02 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,6 @@ void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 void	*ft_memmove(void *dest, const void *src, size_t n);
 char	*get_next_line(int fd);
+int		ft_strcmp(char *s1, char *s2);
 
 #endif

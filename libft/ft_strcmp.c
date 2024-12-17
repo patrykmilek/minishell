@@ -1,18 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 22:39:41 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:42 by kubapyciarz      ###   ########.fr       */
+/*   Created: 2024/12/17 22:38:20 by kubapyciarz       #+#    #+#             */
+/*   Updated: 2024/12/17 22:38:21 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "libft.h"
 
-int	do_exit(void)
+int	ft_strcmp(char *s1, char *s2)
 {
-	return (1);
+	int	i;
+
+	i = 0;
+	while ((s1[i] == s2[i]) && s1[i] && s2[i])
+		i++;
+	return (s1[i] - s2[i]);
 }

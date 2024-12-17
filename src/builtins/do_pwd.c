@@ -1,19 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   do_pwd.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/17 22:39:34 by kubapyciarz       #+#    #+#             */
+/*   Updated: 2024/12/17 22:39:35 by kubapyciarz      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-int	do_pwd(char **args)
+int	do_pwd(void)
 {
 	char	cwd[PATH_MAX];
 
-	if (count_args(args) > 1)
+	if (getcwd(cwd, PATH_MAX))
 	{
-		ft_putendl_fd("pwd: too many arguments", STDERR_FILENO);
+		ft_putendl_fd(cwd, STDOUT_FILENO);
 		return (1);
 	}
-	else if (getcwd(cwd, PATH_MAX))
-	{
-		ft_putendl_fd(cwd, STDERR_FILENO);
-		return (1);
-	}
-	else
-		return (0);
+	return (0);
 }

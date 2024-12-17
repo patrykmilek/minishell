@@ -8,13 +8,15 @@ SRC_DIR = src
 BUILTINS_DIR = $(SRC_DIR)/builtins
 ENV_DIR = $(SRC_DIR)/env
 TOKENIZER_DIR = $(SRC_DIR)/tokenizer
+EXECUTE_DIR = $(SRC_DIR)/execute
 OBJ_DIR = obj
 
 # Dodaj wszystkie źródła, w tym tokenizer.c i additional.c
 SRC = $(wildcard $(SRC_DIR)/*.c) \
       $(wildcard $(BUILTINS_DIR)/*.c) \
       $(wildcard $(ENV_DIR)/*.c) \
-      $(wildcard $(TOKENIZER_DIR)/*.c)
+      $(wildcard $(TOKENIZER_DIR)/*.c) \
+	  $(wildcard $(EXECUTE_DIR)/*.c)
 
 # Wygenerowanie plików obiektowych
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
