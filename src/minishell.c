@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:10 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:11 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/18 15:25:34 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-t_shell	*init_shell(void)
+static t_shell	*init_shell(void)
 {
 	t_shell	*shell;
 

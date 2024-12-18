@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:50 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:51 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/18 15:28:15 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,11 @@ int	execute_commands(t_shell *shell, t_token **tokens)
 	{
 		if (current_token->type == COMMAND)
 		{
+			args = create_arg_list(current_token->next);
 			if (check_if_builtins(current_token) == 2)
 				return (2);
 			else if (check_if_builtins(current_token) == 1)
 			{
-				args = create_arg_list(current_token->next);
 				if (!args)
 				{
 					ft_putstr_fd("Error: Memory allocation failed\n", STDERR_FILENO);
@@ -71,10 +71,10 @@ int	execute_commands(t_shell *shell, t_token **tokens)
 				}
 				if (do_builtins(shell, current_token, args) == 0)
 					ft_putendl_fd("blad", STDERR_FILENO);
-				free_args(args);
 			}
-			else
+			else if (do_executable(shell, current_token->value, args) == 0)
 				ft_putendl_fd("unknown command", STDERR_FILENO);
+			free_args(args);
 		}
 		current_token = current_token->next;
 	}

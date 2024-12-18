@@ -73,6 +73,11 @@ int		add_new_node(t_shell *shell, char *key, char *value);
 char	*remove_quotes(char *str);
 int		check_key(char *key); // w do env.c - nie zmiescilo sie
 // -----------------------------
+// Wykonywanie poleceń z programow
+// -----------------------------
+int		do_executable(t_shell *shell, char *cmd, char **args);
+char	**get_envp(t_shell *shell);
+// -----------------------------
 // Wykonywanie poleceń
 // -----------------------------
 int		execute_commands(t_shell *shell, t_token **tokens);
