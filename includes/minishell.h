@@ -77,6 +77,9 @@ int		check_key(char *key); // w do env.c - nie zmiescilo sie
 // -----------------------------
 int		do_executable(t_shell *shell, char *cmd, char **args);
 char	**get_envp(t_shell *shell);
+char	**combine_arguments(char **args, char *cmd);
+void	free_list(char **envp);
+
 // -----------------------------
 // Wykonywanie poleceń
 // -----------------------------

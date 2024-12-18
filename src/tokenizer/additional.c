@@ -17,7 +17,7 @@ int	is_special_char(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-void add_special_token(t_token **tokens, int *count, char *line, int *i)
+void	add_special_token(t_token **tokens, int *count, char *line, int *i)
 {
 	tokens[*count] = malloc(sizeof(t_token));
 	if (!tokens[*count])

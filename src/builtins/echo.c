@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:36 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/18 14:58:38 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/18 18:30:08 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static void	print_specific_env(t_shell *shell, char *arg)
 	argument = ft_strdup(arg + 1);
 	if (!argument)
 		return ;
-
 	current = shell->env;
 	while (current)
 	{
@@ -35,6 +34,7 @@ static void	print_specific_env(t_shell *shell, char *arg)
 	}
 	free(argument);
 }
+
 int	do_echo(t_shell *shell, char **args)
 {
 	int	args_count;
