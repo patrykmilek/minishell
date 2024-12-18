@@ -53,7 +53,7 @@ typedef struct s_shell
 // Deklaracje builtins
 // -----------------------------
 int		do_exit(void);
-int		do_echo(char **args);
+int		do_echo(t_shell *shell, char **args);
 int		do_builtins(t_shell *shell, t_token *current_token, char **args);
 int		do_pwd(void);
 int		do_env(t_shell *shell);

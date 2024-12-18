@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:39 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:40 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/18 14:51:25 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	do_builtins(t_shell *shell, t_token *current_token, char **args)
 	is_done = 0;
 	if (ft_strncmp(current_token->value, "echo",
 			4) == 0 && current_token->value[4] == '\0')
-		is_done = do_echo(args);
+		is_done = do_echo(shell, args);
 	else if (ft_strncmp(current_token->value,
 			"pwd", 3) == 0 && current_token->value[3] == '\0')
 		is_done = do_pwd();

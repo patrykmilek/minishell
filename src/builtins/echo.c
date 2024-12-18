@@ -6,13 +6,36 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:36 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:37 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/18 14:58:38 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	do_echo(char **args)
+static void	print_specific_env(t_shell *shell, char *arg)
+{
+	t_env	*current;
+	char	*argument;
+
+	if (!arg || arg[0] != '$')
+		return ;
+	argument = ft_strdup(arg + 1);
+	if (!argument)
+		return ;
+
+	current = shell->env;
+	while (current)
+	{
+		if (ft_strcmp(current->key, argument) == 0)
+		{
+			ft_putstr_fd(current->value, STDOUT_FILENO);
+			break ;
+		}
+		current = current->next;
+	}
+	free(argument);
+}
+int	do_echo(t_shell *shell, char **args)
 {
 	int	args_count;
 	int	is_new_line;
@@ -27,7 +50,10 @@ int	do_echo(char **args)
 	}
 	while (args[args_count] != NULL)
 	{
-		ft_putstr_fd(args[args_count], STDOUT_FILENO);
+		if (args[args_count][0] == '$')
+			print_specific_env(shell, args[args_count]);
+		else
+			ft_putstr_fd(args[args_count], STDOUT_FILENO);
 		if (args[args_count + 1])
 			ft_putchar_fd(' ', STDOUT_FILENO);
 		args_count++;
