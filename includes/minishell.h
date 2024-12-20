@@ -6,6 +6,7 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <limits.h>
+#include <sys/wait.h>
 
 // -----------------------------
 // Struktura zmiennych środowiska
@@ -106,5 +107,14 @@ void	add_special_token(t_token **tokens, int *count, char *line, int *i);
 void	handle_redirection_token(t_token **tokens, int *count, char *line, int *i);
 void	handle_pipe_token(t_token **tokens, int *count);
 void	link_tokens(t_token **tokens);
+char	*extract_word(char *line, int *i);
+char	*extract_quoted_word(char *line, int *i);
+t_token_type	determine_token_type(t_token **tokens, int count);
+// -----------------------------
+// Signals
+// -----------------------------
+void	handle_sigint(int sig);
+void	handle_sigquit(int sig);
+void	setup_signals(void);
 
 #endif

@@ -10,15 +10,17 @@ ENV_DIR = $(SRC_DIR)/env
 TOKENIZER_DIR = $(SRC_DIR)/tokenizer
 EXECUTE_DIR = $(SRC_DIR)/execute
 EXECUTABLE_DIR = $(SRC_DIR)/executable
+SIGNALS_DIR = $(SRC_DIR)/signals
 OBJ_DIR = obj
 
-# Dodaj wszystkie źródła, w tym tokenizer.c i additional.c
+# Dodaj wszystkie źródła, w tym signals.c
 SRC = $(wildcard $(SRC_DIR)/*.c) \
       $(wildcard $(BUILTINS_DIR)/*.c) \
       $(wildcard $(ENV_DIR)/*.c) \
       $(wildcard $(TOKENIZER_DIR)/*.c) \
-	  $(wildcard $(EXECUTE_DIR)/*.c) \
-	  $(wildcard $(EXECUTABLE_DIR)/*.c)
+      $(wildcard $(EXECUTE_DIR)/*.c) \
+      $(wildcard $(EXECUTABLE_DIR)/*.c) \
+      $(wildcard $(SIGNALS_DIR)/*.c)
 
 # Wygenerowanie plików obiektowych
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
@@ -32,7 +34,7 @@ $(LIBFT):
 
 # Budowanie programu minishell
 $(NAME): $(OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -lreadline -o $(NAME)
 
 # Kompilacja poszczególnych plików obiektowych
 $(OBJ_DIR)/%.o: %.c

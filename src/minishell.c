@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:10 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/18 15:25:34 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/20 16:54:55 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 static t_shell	*init_shell(void)
 {
@@ -64,18 +66,23 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	init_shell();
 	init_env(&shell, envp);
+	setup_signals();
+
 	while (1)
 	{
-		write(1, "minishell> ", 11);
-		input = get_next_line(STDIN_FILENO);
+		input = readline("minishell> ");
 		if (!input)
 		{
 			write(1, "exit\n", 5);
 			break ;
 		}
+		if (*input)
+			add_history(input);
+
 		trim_newline(input);
 		tokens = tokenize_input(input);
 		free(input);
+
 		if (!tokens)
 		{
 			ft_putendl_fd("Error: Tokenization failed", STDERR_FILENO);

@@ -6,44 +6,11 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 10:00:00 by pmilek            #+#    #+#             */
-/*   Updated: 2024/12/16 11:53:53 by pmilek           ###   ########.fr       */
+/*   Updated: 2024/12/20 17:30:23 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-static char	*extract_word(char *line, int *i)
-{
-	int		start;
-	char	*word;
-
-	start = *i;
-	while (line[*i] && line[*i] != ' ' && !is_special_char(line[*i]))
-		(*i)++;
-	word = ft_substr(line, start, *i - start);
-	return (word);
-}
-
-static char	*extract_quoted_word(char *line, int *i)
-{
-	char	quote;
-	int		start;
-
-	quote = line[*i];
-	start = ++(*i);
-	while (line[*i] && line[*i] != quote)
-		(*i)++;
-	if (line[*i] == quote)
-		(*i)++;
-	return (ft_substr(line, start, *i - start - 1));
-}
-
-static t_token_type	determine_token_type(t_token **tokens, int count)
-{
-	if (count == 0 || (tokens[count - 1]->type == PIPE))
-		return (COMMAND);
-	return (ARGUMENT);
-}
 
 static void	handle_word_token(t_token **tokens, int *count, char *line, int *i)
 {
@@ -56,13 +23,41 @@ static void	handle_word_token(t_token **tokens, int *count, char *line, int *i)
 }
 
 static void	handle_quoted_token(t_token **tokens,
-	int *count, char *line, int *i)
+			int *count, char *line, int *i)
 {
 	tokens[*count] = malloc(sizeof(t_token));
 	if (!tokens[*count])
 		return ;
 	tokens[*count]->value = extract_quoted_word(line, i);
 	tokens[*count]->type = determine_token_type(tokens, *count);
+	(*count)++;
+}
+
+static int	is_assignment(char *line, int start)
+{
+	while (line[start] && line[start] != '=' && line[start] != ' ')
+		start++;
+	return (line[start] == '=');
+}
+
+static void	handle_assignment_token(t_token **tokens,
+			int *count, char *line, int *i)
+{
+	int		start;
+	char	*assignment;
+
+	start = *i;
+	while (line[*i] && (line[*i] != ' ' || line[start] == '='))
+	{
+		if (line[*i] == '"' || line[*i] == '\'')
+			extract_quoted_word(line, i);
+		else
+			(*i)++;
+	}
+	assignment = ft_substr(line, start, *i - start);
+	tokens[*count] = malloc(sizeof(t_token));
+	tokens[*count]->type = ARGUMENT;
+	tokens[*count]->value = assignment;
 	(*count)++;
 }
 
@@ -81,12 +76,12 @@ t_token	**tokenize_input(char *line)
 	{
 		if (line[i] == ' ')
 			i++;
+		else if (is_assignment(line, i))
+			handle_assignment_token(tokens, &count, line, &i);
 		else if (line[i] == '"' || line[i] == '\'')
 			handle_quoted_token(tokens, &count, line, &i);
 		else if (is_special_char(line[i]))
-		{
 			add_special_token(tokens, &count, line, &i);
-		}
 		else
 			handle_word_token(tokens, &count, line, &i);
 	}

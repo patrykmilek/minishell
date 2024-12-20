@@ -3,62 +3,62 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:36 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/18 18:30:08 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/20 16:39:02 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	print_specific_env(t_shell *shell, char *arg)
+static void	print_env_variable(t_shell *shell, const char *arg)
 {
 	t_env	*current;
-	char	*argument;
 
-	if (!arg || arg[0] != '$')
-		return ;
-	argument = ft_strdup(arg + 1);
-	if (!argument)
-		return ;
 	current = shell->env;
 	while (current)
 	{
-		if (ft_strcmp(current->key, argument) == 0)
+		// Rzutowanie const char* na char* w wywołaniu ft_strcmp
+		if (ft_strcmp(current->key, (char *)(arg + 1)) == 0)
 		{
+			// Rzutowanie const char* na char* w wywołaniu ft_putstr_fd
 			ft_putstr_fd(current->value, STDOUT_FILENO);
-			break ;
+			return ;
 		}
 		current = current->next;
 	}
-	free(argument);
+}
+
+static void	print_argument(t_shell *shell, const char *arg)
+{
+	if (arg[0] == '$' && ft_strlen(arg) > 1)
+		print_env_variable(shell, arg);
+	else
+		// Rzutowanie const char* na char* w wywołaniu ft_putstr_fd
+		ft_putstr_fd((char *)arg, STDOUT_FILENO);
 }
 
 int	do_echo(t_shell *shell, char **args)
 {
-	int	args_count;
-	int	is_new_line;
+	int	i;
+	int	new_line;
 
-	is_new_line = 1;
-	args_count = 0;
-	if (args && args[0] && ft_strncmp(args[0],
-			"-n", 2) == 0 && args[0][2] == '\0')
+	new_line = 1;
+	i = 0;
+	if (args && args[0] && ft_strcmp(args[0], "-n") == 0)
 	{
-		is_new_line = 0;
-		args_count = 1;
+		new_line = 0;
+		i++;
 	}
-	while (args[args_count] != NULL)
+	while (args && args[i])
 	{
-		if (args[args_count][0] == '$')
-			print_specific_env(shell, args[args_count]);
-		else
-			ft_putstr_fd(args[args_count], STDOUT_FILENO);
-		if (args[args_count + 1])
+		print_argument(shell, args[i]);
+		if (args[i + 1])
 			ft_putchar_fd(' ', STDOUT_FILENO);
-		args_count++;
+		i++;
 	}
-	if (is_new_line == 1)
+	if (new_line)
 		ft_putchar_fd('\n', STDOUT_FILENO);
 	return (1);
 }

@@ -1,13 +1,13 @@
 /* ************************************************************************** */
-/*																			*/
-/*														:::	  ::::::::   */
-/*   additional.c									   :+:	  :+:	:+:   */
-/*													+:+ +:+		 +:+	 */
-/*   By: pmilek <pmilek@student.42.fr>			  +#+  +:+	   +#+		*/
-/*												+#+#+#+#+#+   +#+		   */
-/*   Created: 2024/06/15 10:00:00 by pmilek			#+#	#+#			 */
-/*   Updated: 2024/12/16 11:58:05 by pmilek		   ###   ########.fr	   */
-/*																			*/
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   additional.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/15 10:00:00 by pmilek            #+#    #+#             */
+/*   Updated: 2024/12/20 17:31:47 by pmilek           ###   ########.fr       */
+/*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
@@ -23,19 +23,17 @@ void	add_special_token(t_token **tokens, int *count, char *line, int *i)
 	if (!tokens[*count])
 		return ;
 	if (line[*i] == '|')
-	{
-		tokens[*count]->type = PIPE;
-		tokens[*count]->value = ft_strdup("|");
-	}
-	else if (line[*i] == '<' || line[*i] == '>')
-		handle_redirection_token(tokens, count, line, i);
+		handle_pipe_token(tokens, count);
 	else
-	{
-		free(tokens[*count]);
-		return ;
-	}
-	(*count)++;
+		handle_redirection_token(tokens, count, line, i);
 	(*i)++;
+}
+
+void	handle_pipe_token(t_token **tokens, int *count)
+{
+	tokens[*count]->type = PIPE;
+	tokens[*count]->value = ft_strdup("|");
+	(*count)++;
 }
 
 void	handle_redirection_token(t_token **tokens,
@@ -63,12 +61,7 @@ void	handle_redirection_token(t_token **tokens,
 		tokens[*count]->type = REDIR_OUT;
 		tokens[*count]->value = ft_strdup(">");
 	}
-}
-
-void	handle_pipe_token(t_token **tokens, int *count)
-{
-	tokens[*count]->type = PIPE;
-	tokens[*count]->value = ft_strdup("|");
+	(*count)++;
 }
 
 void	link_tokens(t_token **tokens)
