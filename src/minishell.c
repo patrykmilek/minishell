@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:10 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/20 16:54:55 by pmilek           ###   ########.fr       */
+/*   Updated: 2024/12/28 19:05:35 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,13 @@ static t_shell	*init_shell(void)
 	if (!shell)
 		return (NULL);
 	shell->env = NULL;
+	shell->tokens = NULL;
+	shell->is_child = 0;
+	shell->pid = -1;
 	return (shell);
 }
 
-static void	free_tokens(t_token **tokens)
+void	free_tokens(t_token **tokens)
 {
 	int	i;
 
@@ -42,7 +45,7 @@ static void	free_tokens(t_token **tokens)
 	free(tokens);
 }
 
-static void	free_env(t_env *env)
+void	free_env(t_env *env)
 {
 	t_env	*temp;
 
@@ -81,6 +84,7 @@ int	main(int argc, char **argv, char **envp)
 
 		trim_newline(input);
 		tokens = tokenize_input(input);
+		shell.tokens = *tokens;
 		free(input);
 
 		if (!tokens)

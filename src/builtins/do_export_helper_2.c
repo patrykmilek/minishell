@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:25 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:26 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/28 23:13:04 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	init_new_node(t_env **new_node, char *key, char *value)
 	{
 		free(*new_node);
 		return (ft_putendl_fd("export: malloc error for key",
-				STDERR_FILENO), 0);
+				STDERR_FILENO), 1);
 	}
 	(*new_node)->value = NULL;
 	if (value)
@@ -34,10 +34,10 @@ int	init_new_node(t_env **new_node, char *key, char *value)
 			free((*new_node)->key);
 			free(*new_node);
 			return (ft_putendl_fd("export: malloc error for value",
-					STDERR_FILENO), 0);
+					STDERR_FILENO), 1);
 		}
 	}
-	return (1);
+	return (0);
 }
 
 void	add_node_to_env(t_shell *shell, t_env *new_node)
@@ -66,7 +66,7 @@ int	update_env_value(t_env *current, char *key, char *value)
 			current->value = ft_strdup(value);
 			if (!current->value)
 				return (ft_putendl_fd("export: malloc error for value",
-						STDERR_FILENO), 0);
+						STDERR_FILENO), 1);
 		}
 		return (1);
 	}

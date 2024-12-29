@@ -6,30 +6,25 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:50 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/18 18:30:31 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/29 13:18:57 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	check_if_builtins(t_token *cur)
+int	is_builtin_command(char *cmd)
 {
-	if (ft_strncmp(cur->value, "exit", 4) == 0 && cur->value[4] == '\0')
+	if (!cmd)
+		return (0);
+	if (ft_strcmp(cmd, "echo") == 0
+		|| ft_strcmp(cmd, "pwd") == 0
+		|| ft_strcmp(cmd, "env") == 0
+		|| ft_strcmp(cmd, "cd") == 0
+		|| ft_strcmp(cmd, "export") == 0
+		|| ft_strcmp(cmd, "unset") == 0)
+		return (1);
+	else if (ft_strcmp(cmd, "exit"))
 		return (2);
-	else if (ft_strncmp(cur->value, "echo", 4) == 0 && cur->value[4] == '\0')
-	{
-		return (1);
-	}
-	else if (ft_strncmp(cur->value, "pwd", 3) == 0 && cur->value[3] == '\0')
-		return (1);
-	else if (ft_strncmp(cur->value, "env", 3) == 0 && cur->value[3] == '\0')
-		return (1);
-	else if (ft_strncmp(cur->value, "cd", 2) == 0 && cur->value[2] == '\0')
-		return (1);
-	else if (ft_strncmp(cur->value, "export", 6) == 0 && cur->value[6] == '\0')
-		return (1);
-	else if (ft_strncmp(cur->value, "unset", 5) == 0 && cur->value[5] == '\0')
-		return (1);
 	return (0);
 }
 
@@ -48,36 +43,64 @@ static void	free_args(char **args)
 	free(args);
 }
 
-// Funkcja do wykonania polecenia w oparciu o tokeny
-int	execute_commands(t_shell *shell, t_token **tokens)
+int	do_command(t_shell *shell, t_token *current_token)
 {
-	t_token	*current_token;
 	char	**args;
 
-	current_token = *tokens;
-	while (current_token)
+	args = create_arg_list(current_token->next);
+	if (is_builtin_command(current_token->value) == 1)
 	{
-		if (current_token->type == COMMAND)
+		if (!args)
 		{
-			args = create_arg_list(current_token->next);
-			if (check_if_builtins(current_token) == 2)
-				return (2);
-			else if (check_if_builtins(current_token) == 1)
-			{
-				if (!args)
-				{
-					ft_putstr_fd("Error: Memory allocation failed\n",
-						STDERR_FILENO);
-					return (1);
-				}
-				if (do_builtins(shell, current_token, args) == 0)
-					ft_putendl_fd("blad", STDERR_FILENO);
-			}
-			else if (do_executable(shell, current_token->value, args) == 0)
-				ft_putendl_fd("unknown command", STDERR_FILENO);
-			free_args(args);
+			ft_putstr_fd("Error: Memory allocation failed\n", STDERR_FILENO);
+			return (2);
 		}
-		current_token = current_token->next;
+		if (do_builtins(shell, current_token, args) == 0)
+		{
+			ft_putendl_fd("blad", STDERR_FILENO);
+			return (1);
+		}
 	}
+	free_args(args);
+	return (0);
+}
+
+int	check_for_pipes(t_shell *shell)
+{
+	t_token	*current;
+
+	current = shell->tokens;
+	while (current)
+	{
+		if (current->type == PIPE || current->type == REDIR_IN
+			|| current->type == REDIR_OUT || current->type == APPEND
+			|| current->type == HEREDOC)
+			return (1);
+		current = current->next;
+	}
+	return (0);
+}
+
+int	execute_commands(t_shell *shell, t_token **tokens)
+{
+	t_token	*tmp_token;
+
+	(void)tokens;
+	parse_tokens(shell);
+	if (ft_strcmp(shell->segment->command, "exit") == 0)
+		return (2);
+	tmp_token = malloc(sizeof(t_token));
+	if (!tmp_token)
+		return (1);
+	if (!shell->segment->relation && is_parent_builtin(shell->segment->command))
+	{
+		tmp_token->type = COMMAND;
+		tmp_token->value = shell->segment->command;
+		tmp_token->next = NULL;
+		do_builtins(shell, tmp_token, shell->segment->args);
+	}
+	else
+		execute_segments(shell);
+	free(tmp_token);
 	return (0);
 }

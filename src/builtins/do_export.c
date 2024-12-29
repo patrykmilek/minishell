@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:29 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:30 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/29 13:00:20 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@ static int	check_forbidden_sign(char *str)
 	int	i;
 
 	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
-		return (0);
+		return (1);
 	i = 1;
 	while (str[i] && str[i] != '=')
 	{
 		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
+			return (1);
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 int	add_new_node(t_shell *shell, char *key, char *value)
@@ -33,9 +33,9 @@ int	add_new_node(t_shell *shell, char *key, char *value)
 	t_env	*new_node;
 
 	if (!init_new_node(&new_node, key, value))
-		return (0);
+		return (1);
 	add_node_to_env(shell, new_node);
-	return (1);
+	return (0);
 }
 
 static void	extract_key_and_value(char *str, char **key, char **value)
@@ -109,5 +109,5 @@ int	do_export(t_shell *shell, char **args)
 			update_or_add_env(shell, args[i]);
 		i++;
 	}
-	return (1);
+	return (0);
 }

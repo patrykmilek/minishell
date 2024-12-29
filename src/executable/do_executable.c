@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   do_executable.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 18:31:26 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/20 15:54:18 by pmilek           ###   ########.fr       */
+/*   Updated: 2024/12/28 22:03:59 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,21 +56,6 @@ static char	*check_if_executable(char **paths)
 	return (NULL);
 }
 
-static void	execute_cmd(char *path, char **args, char **envp)
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		execve(path, args, envp);
-	}
-	else if (pid > 0)
-		wait(NULL);
-	else
-		perror("fork error");
-}
-
 int	do_executable(t_shell *shell, char *cmd, char **args)
 {
 	char	**paths;
@@ -87,7 +72,7 @@ int	do_executable(t_shell *shell, char *cmd, char **args)
 	argument = combine_arguments(args, cmd);
 	envp = get_envp(shell);
 	if (path)
-		execute_cmd(path, argument, envp);
+		execve(path, argument, envp);
 	else
 		ft_putendl_fd("not executable", STDOUT_FILENO);
 	free_list(paths);

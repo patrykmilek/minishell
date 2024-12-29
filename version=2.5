@@ -60,3 +60,14 @@ version 2.5
 	- norminette OK w tokenizer i signals
 	- poprawilem main, zeby obslugiwal sygnaly i historie
 	- jakbys cos wychwycil, ze nie dziala przy testowaniu daj znac, do poniedzialku wlacznie jestem przy lapku, pozniej wtorek - czwartek mnie nie ma 
+
+version 2.6
+	redirekcje i potoki działaja, norminette sprawdzony (poza debug.c, który i tak jest do wyjebanie przed oddaniem
+	oraz minishell.c).
+	do zrobienia:
+		- sprawdzenie poprawnosci wpisanego prompta np. "ls || sort" lub "| ls". aktualnie kod wywala memory leak
+			jesli 2 operatory są obok siebie lub jeśli skladnia linji sie nie zgadza.
+		- sprawdzenie calosci pod katem bledow i norminette
+		- zastaniowienie sie co dalej i co potrzeba aby wykonac caly projekt
+		- sprawdzic projekt pod wzgledem zwracanych błedow tak aby wypisywal to samo co shell
+	rob test ja tez bede robil i jak znajdziemy jakis blad dajmy sobie znac.

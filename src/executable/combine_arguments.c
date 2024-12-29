@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 18:34:51 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/18 18:35:55 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/28 22:03:32 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ char	**combine_arguments(char **args, char *cmd)
 	int		i;
 
 	count = 0;
-	while (args[count])
+	while (args && args[count])
 		count++;
 	if (!init_arguments(&arguments, cmd, count))
 		return (NULL);

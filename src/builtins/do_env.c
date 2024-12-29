@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:23 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:24 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/28 23:12:26 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@ int	check_key(char *key)
 	int	i;
 
 	if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))
-		return (0);
+		return (1);
 	i = 1;
 	while (key[i])
 	{
 		if (!ft_isalnum(key[i]) && key[i] != '_')
-			return (0);
+			return (1);
 		i++;
 	}
-	return (1);
+	return (0);
 }
 
 int	do_env(t_shell *shell)
@@ -34,7 +34,7 @@ int	do_env(t_shell *shell)
 
 	current = shell->env;
 	if (!current)
-		return (0);
+		return (1);
 	while (current)
 	{
 		if (current->key && current->value)
@@ -46,5 +46,5 @@ int	do_env(t_shell *shell)
 		}
 		current = current->next;
 	}
-	return (1);
+	return (0);
 }

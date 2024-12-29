@@ -1,25 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   do_pwd.c                                           :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/17 22:39:34 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/28 23:17:22 by kubapyciarz      ###   ########.fr       */
+/*   Created: 2024/12/28 18:31:12 by kubapyciarz       #+#    #+#             */
+/*   Updated: 2024/12/28 19:07:03 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	do_pwd(void)
+void	handle_error(const char *error_msg, t_shell *shell)
 {
-	char	cwd[PATH_MAX];
-
-	if (getcwd(cwd, PATH_MAX))
+	if (error_msg)
+		perror(error_msg);
+	if (shell->pid > 0 && shell->is_child == 0)
 	{
-		ft_putendl_fd(cwd, STDOUT_FILENO);
-		return (0);
+		kill(shell->pid, SIGKILL);
+		waitpid(shell->pid, NULL, 0);
 	}
-	return (1);
+	if (shell)
+	{
+		free_tokens(&shell->tokens);
+		free_segments(shell->segment);
+		free_env(shell->env);
+	}
+	do_executable(shell, NULL, NULL);
 }

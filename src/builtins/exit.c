@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:41 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:42 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/28 23:15:14 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,5 @@
 
 int	do_exit(void)
 {
-	return (1);
+	return (0);
 }

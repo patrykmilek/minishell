@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:32 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:33 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2024/12/28 23:14:50 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,5 @@ int	do_unset(t_shell *shell, char **args)
 			remove_var(shell, args[i]);
 		i++;
 	}
-	return (1);
+	return (0);
 }

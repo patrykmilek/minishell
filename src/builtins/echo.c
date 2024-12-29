@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:36 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/20 16:39:02 by pmilek           ###   ########.fr       */
+/*   Updated: 2024/12/28 23:16:02 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ static void	print_env_variable(t_shell *shell, const char *arg)
 	current = shell->env;
 	while (current)
 	{
-		// Rzutowanie const char* na char* w wywołaniu ft_strcmp
 		if (ft_strcmp(current->key, (char *)(arg + 1)) == 0)
 		{
-			// Rzutowanie const char* na char* w wywołaniu ft_putstr_fd
 			ft_putstr_fd(current->value, STDOUT_FILENO);
 			return ;
 		}
@@ -35,7 +33,6 @@ static void	print_argument(t_shell *shell, const char *arg)
 	if (arg[0] == '$' && ft_strlen(arg) > 1)
 		print_env_variable(shell, arg);
 	else
-		// Rzutowanie const char* na char* w wywołaniu ft_putstr_fd
 		ft_putstr_fd((char *)arg, STDOUT_FILENO);
 }
 
@@ -60,5 +57,5 @@ int	do_echo(t_shell *shell, char **args)
 	}
 	if (new_line)
 		ft_putchar_fd('\n', STDOUT_FILENO);
-	return (1);
+	return (0);
 }
