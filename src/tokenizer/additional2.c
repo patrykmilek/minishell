@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   additional2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:26:48 by pmilek            #+#    #+#             */
-/*   Updated: 2024/12/29 13:42:06 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 19:55:31 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+int	has_unclosed_quotes(char *line)
+{
+	int		i;
+	char	quote;
+
+	i = 0;
+	quote = '\0';
+	while (line[i])
+	{
+		if (line[i] == '\'' || line[i] == '"')
+		{
+			if (quote == '\0')
+				quote = line[i];
+			else if (quote == line[i])
+				quote = '\0';
+		}
+		i++;
+	}
+	return (quote != '\0');
+}
 
 char	*extract_word(char *line, int *i)
 {
@@ -21,6 +42,11 @@ char	*extract_word(char *line, int *i)
 	while (line[*i] && line[*i] != ' ' && !is_special_char(line[*i]))
 		(*i)++;
 	word = ft_substr(line, start, *i - start);
+	if (!word)
+	{
+		perror("Allocation failed in extract_word");
+		return (NULL);
+	}
 	return (word);
 }
 

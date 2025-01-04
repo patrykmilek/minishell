@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipes_and_redir.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 17:45:54 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/29 13:19:49 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 19:47:27 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,13 @@ static void	child_process(t_fork_data *data)
 		ret = do_builtins(data->shell, &tmp_token, data->current->args);
 		exit(ret);
 	}
-	else if (!do_executable(data->shell,
-			data->current->command, data->current->args))
+	else if (!do_executable(data->shell, data->current->command,
+			data->current->args))
 	{
-		perror("execution failed");
-		exit(EXIT_FAILURE);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(data->current->command, STDERR_FILENO);
+		ft_putendl_fd(": command not found", STDERR_FILENO);
+		exit(127);
 	}
 	exit(EXIT_SUCCESS);
 }

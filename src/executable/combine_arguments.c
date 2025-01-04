@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   combine_arguments.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 18:34:51 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/28 22:03:32 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 19:48:03 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,23 @@ char	**combine_arguments(char **args, char *cmd)
 	}
 	arguments[count + 1] = NULL;
 	return (arguments);
+}
+
+int	do_executable(t_shell *shell, char *cmd, char **args)
+{
+	char	**paths;
+	char	*path;
+	char	**argument;
+	char	**envp;
+
+	path = prepare_executable(shell, cmd, &paths);
+	if (!path)
+		return (0);
+	argument = combine_arguments(args, cmd);
+	envp = get_envp(shell);
+	execute_binary(path, argument, envp);
+	free_list(paths);
+	free_list(argument);
+	free_list(envp);
+	return (0);
 }

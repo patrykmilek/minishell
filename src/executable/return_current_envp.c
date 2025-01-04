@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   return_current_envp.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 18:36:18 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/18 18:36:19 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 19:37:11 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

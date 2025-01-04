@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 13:45:18 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/29 13:49:06 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 20:04:16 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,8 @@ int			do_executable(t_shell *shell, char *cmd, char **args);
 char		**get_envp(t_shell *shell);
 char		**combine_arguments(char **args, char *cmd);
 void		free_list(char **envp);
+char	*prepare_executable(t_shell *shell, char *cmd, char ***paths);
+int	execute_binary(char *path, char **argument, char **envp);
 
 // -----------------------------
 // Wykonywanie poleceń
@@ -142,6 +144,7 @@ void		free_list(char **envp);
 int			execute_commands(t_shell *shell, t_token **tokens);
 int			is_builtin_command(char *cmd);
 char		**create_arg_list(t_token *current_token);
+char	*check_if_executable(char **paths);
 // -----------------------------
 // Inicjalizacja środowiska
 // -----------------------------
@@ -167,6 +170,10 @@ void		link_tokens(t_token **tokens);
 char		*extract_word(char *line, int *i);
 int			determine_token_type(t_token **tokens, int count);
 char		*extract_quoted_word(char *line, int *i);
+int			has_unclosed_quotes(char *line);
+int			validate_line_start(char *line, t_token **tokens, int count);
+void		free_token_array(t_token **tokens, int count);
+int			is_assignment(char *line, int start);
 // -----------------------------
 // Signals
 // -----------------------------

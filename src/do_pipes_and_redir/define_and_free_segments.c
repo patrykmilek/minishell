@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   define_and_free_segments.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 23:26:57 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/28 19:22:36 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 19:46:49 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	free_segments(t_segment *segments)
 	{
 		temp = segments;
 		segments = segments->next;
+		if (temp->command)
+			free(temp->command);
 		if (temp->args)
 		{
 			i = 0;

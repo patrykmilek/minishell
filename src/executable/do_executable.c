@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   do_executable.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 18:31:26 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/28 22:03:59 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 19:48:16 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	add_cmd_to_paths(char **paths, char *cmd)
 	}
 }
 
-static char	*check_if_executable(char **paths)
+char	*check_if_executable(char **paths)
 {
 	int	i;
 
@@ -56,27 +56,26 @@ static char	*check_if_executable(char **paths)
 	return (NULL);
 }
 
-int	do_executable(t_shell *shell, char *cmd, char **args)
+int	execute_binary(char *path, char **argument, char **envp)
 {
-	char	**paths;
+	execve(path, argument, envp);
+	perror("minishell");
+	exit(EXIT_FAILURE);
+}
+
+char	*prepare_executable(t_shell *shell, char *cmd, char ***paths)
+{
 	char	*path;
-	char	**argument;
-	char	**envp;
 
 	path = find_path_in_env(shell);
 	if (!path)
-		return (0);
-	paths = ft_split(path, ':');
-	add_cmd_to_paths(paths, cmd);
-	path = check_if_executable(paths);
-	argument = combine_arguments(args, cmd);
-	envp = get_envp(shell);
-	if (path)
-		execve(path, argument, envp);
-	else
-		ft_putendl_fd("not executable", STDOUT_FILENO);
-	free_list(paths);
-	free_list(argument);
-	free_list(envp);
-	return (1);
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putendl_fd(": command not found", STDERR_FILENO);
+		return (NULL);
+	}
+	*paths = ft_split(path, ':');
+	add_cmd_to_paths(*paths, cmd);
+	return (check_if_executable(*paths));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:10 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/28 19:05:35 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 20:12:11 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,20 @@ static t_shell	*init_shell(void)
 	return (shell);
 }
 
-void	free_tokens(t_token **tokens)
+void free_tokens(t_token **tokens)
 {
-	int	i;
+    int i = 0;
 
-	i = 0;
-	while (tokens[i])
-	{
-		free(tokens[i]->value);
-		free(tokens[i]);
-		i++;
-	}
-	free(tokens);
+    if (!tokens)
+        return;
+
+    while (tokens[i])
+    {
+        free(tokens[i]->value);
+        free(tokens[i]);
+        i++;
+    }
+    free(tokens);
 }
 
 void	free_env(t_env *env)
@@ -59,43 +61,83 @@ void	free_env(t_env *env)
 	}
 }
 
-int	main(int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
 {
-	char	*input;
-	t_shell	shell;
-	t_token	**tokens;
+    char    *input;
+    t_shell *shell;
+    t_token **tokens = NULL;
 
-	(void)argc;
-	(void)argv;
-	init_shell();
-	init_env(&shell, envp);
-	setup_signals();
+    (void)argc;
+    (void)argv;
+    shell = init_shell();
+    if (!shell)
+    {
+        perror("Failed to initialize shell");
+        return (1);
+    }
 
-	while (1)
-	{
-		input = readline("minishell> ");
-		if (!input)
-		{
-			write(1, "exit\n", 5);
-			break ;
-		}
-		if (*input)
-			add_history(input);
+    init_env(shell, envp);
+    setup_signals();
 
-		trim_newline(input);
-		tokens = tokenize_input(input);
-		shell.tokens = *tokens;
-		free(input);
+    while (1)
+{
+    input = readline("minishell> ");
+    if (!input)
+    {
+        write(1, "exit\n", 5);
+        break;
+    }
 
-		if (!tokens)
-		{
-			ft_putendl_fd("Error: Tokenization failed", STDERR_FILENO);
-			continue ;
-		}
-		if (execute_commands(&shell, tokens) == 2)
-			break ;
-		free_tokens(tokens);
-	}
-	free_env(shell.env);
-	return (0);
+    while (has_unclosed_quotes(input))
+    {
+        char *continuation = readline("> ");
+        if (!continuation)
+        {
+            ft_putendl_fd("minishell: unexpected EOF while looking for matching quote", STDERR_FILENO);
+            free(input);
+            break;
+        }
+
+        char *tmp = ft_strjoin(input, "\n");
+        free(input);
+        input = ft_strjoin(tmp, continuation);
+        free(tmp);
+        free(continuation);
+    }
+
+    if (!input)
+        continue;
+
+    if (*input)
+        add_history(input);
+
+    trim_newline(input);
+    tokens = tokenize_input(input);
+
+    free(input);
+
+    if (!tokens)
+        continue;
+
+    shell->tokens = *tokens;
+
+    if (execute_commands(shell, tokens) == 2)
+        break;
+
+    free_tokens(tokens);
+    tokens = NULL;
+
+    free_segments(shell->segment);
+    shell->segment = NULL;
 }
+
+    if (tokens)
+        free_tokens(tokens);
+    if (shell->segment)
+        free_segments(shell->segment);
+
+    free_env(shell->env);
+    free(shell);
+    return (0);
+}
+

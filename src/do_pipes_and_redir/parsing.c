@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 17:19:12 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/29 13:34:22 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 18:48:57 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@ void	process_command(t_segment *segment, t_token **current_token)
 {
 	if ((*current_token)->type == COMMAND)
 	{
+		if (segment->command)
+			free(segment->command);
 		segment->command = ft_strdup((*current_token)->value);
 		*current_token = (*current_token)->next;
 	}
@@ -37,18 +39,12 @@ void	process_redirections(t_segment *segment, t_token **current_token)
 			|| (*current_token)->type == APPEND
 			|| (*current_token)->type == HEREDOC))
 	{
-		if ((*current_token)->type == REDIR_IN
-			|| (*current_token)->type == REDIR_OUT
-			|| (*current_token)->type == APPEND
-			|| (*current_token)->type == HEREDOC)
+		segment->redir = (*current_token)->type;
+		*current_token = (*current_token)->next;
+		if (*current_token && (*current_token)->type == ARGUMENT)
 		{
-			segment->redir = (*current_token)->type;
+			segment->redir_target = ft_strdup((*current_token)->value);
 			*current_token = (*current_token)->next;
-			if (*current_token && (*current_token)->type == ARGUMENT)
-			{
-				segment->redir_target = ft_strdup((*current_token)->value);
-				*current_token = (*current_token)->next;
-			}
 		}
 	}
 }
@@ -75,11 +71,18 @@ void	parse_tokens(t_shell *shell)
 	t_segment	*head;
 	t_segment	*current_segment;
 
-	current_token = shell->tokens;
 	head = NULL;
 	current_segment = NULL;
+	current_token = shell->tokens;
 	while (current_token)
 	{
+		if (current_token->type == PIPE
+			&& (!current_token->next || current_token->next->type == PIPE))
+		{
+			ft_putendl_fd("-bash: syntax error near unexpected token `|'", 2);
+			shell->segment = NULL;
+			return ;
+		}
 		process_segment(&current_token, &current_segment, &head);
 		if (current_token && current_token->type == PIPE)
 		{

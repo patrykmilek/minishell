@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:48 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/17 22:39:49 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/04 19:50:49 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,22 @@ static int	get_args_size(t_token *current_token)
 		current_token = current_token->next;
 	}
 	return (args_size);
+}
+
+int	check_for_pipes(t_shell *shell)
+{
+	t_token	*current;
+
+	current = shell->tokens;
+	while (current)
+	{
+		if (current->type == PIPE || current->type == REDIR_IN
+			|| current->type == REDIR_OUT || current->type == APPEND
+			|| current->type == HEREDOC)
+			return (1);
+		current = current->next;
+	}
+	return (0);
 }
 
 char	**create_arg_list(t_token *current_token)
