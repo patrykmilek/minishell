@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 13:45:18 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/12 13:05:58 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/12 15:59:02 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ char		*check_if_executable(char **paths);
 // Inicjalizacja środowiska
 // -----------------------------
 void		init_env(t_shell *shell, char **env);
+t_shell		*init_shell(int shell_layer);
 // -----------------------------
 // Pomocnicze funkcje (helper.c)
 // -----------------------------
@@ -188,5 +189,7 @@ void		setup_signals(void);
 void		free_env(t_env *env);
 void		free_tokens(t_token **tokens);
 int			is_parent_builtin(char *cmd);
+void		cleanup_shell(t_shell *shell);
+char		*generate_layered_prompt(int shell_layer);
 
 #endif
