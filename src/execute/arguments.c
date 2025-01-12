@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   arguments.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:48 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/04 19:50:49 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/12 12:48:44 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	check_for_pipes(t_shell *shell)
 {
 	t_token	*current;
 
-	current = shell->tokens;
+	current = *shell->tokens;
 	while (current)
 	{
 		if (current->type == PIPE || current->type == REDIR_IN

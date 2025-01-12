@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   combine_arguments.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 18:34:51 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/04 19:48:03 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/12 12:56:45 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,15 +71,20 @@ int	do_executable(t_shell *shell, char *cmd, char **args)
 	char	*path;
 	char	**argument;
 	char	**envp;
+	char	*layer;
 
 	path = prepare_executable(shell, cmd, &paths);
 	if (!path)
 		return (0);
 	argument = combine_arguments(args, cmd);
+	if (ft_strcmp(cmd, "./minishell") == 0)
+	{
+		layer = ft_itoa(shell->shell_layer);
+		argument = append_arg(argument, layer);
+		free(layer);
+	}
 	envp = get_envp(shell);
-	execute_binary(path, argument, envp);
-	free_list(paths);
-	free_list(argument);
-	free_list(envp);
-	return (0);
+	execve(path, argument, envp);
+	perror("minishell");
+	exit(EXIT_FAILURE);
 }

@@ -3,7 +3,7 @@ NAME = minishell
 
 # Kompilator i flagi
 CC = gcc
-CFLAGS = -Werror -Wall -Wextra -g -Iincludes -Ilibft
+CFLAGS = -Werror -Wall -Wextra -Iincludes -Ilibft
 
 # Ścieżki do bibliotek
 LIBFT_DIR = libft

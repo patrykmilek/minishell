@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 13:45:18 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/04 20:04:16 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/12 13:05:58 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,11 @@ typedef struct s_token
 typedef struct s_shell
 {
 	t_env		*env;
-	t_token		*tokens;
+	t_token		**tokens;
 	t_segment	*segment;
 	int			is_child;
 	pid_t		pid;
+	int			shell_layer;
 }	t_shell;
 
 typedef struct s_fork_data
@@ -135,8 +136,8 @@ int			do_executable(t_shell *shell, char *cmd, char **args);
 char		**get_envp(t_shell *shell);
 char		**combine_arguments(char **args, char *cmd);
 void		free_list(char **envp);
-char	*prepare_executable(t_shell *shell, char *cmd, char ***paths);
-int	execute_binary(char *path, char **argument, char **envp);
+char		*prepare_executable(t_shell *shell, char *cmd, char ***paths);
+int			execute_binary(char *path, char **argument, char **envp);
 
 // -----------------------------
 // Wykonywanie poleceń
@@ -144,7 +145,7 @@ int	execute_binary(char *path, char **argument, char **envp);
 int			execute_commands(t_shell *shell, t_token **tokens);
 int			is_builtin_command(char *cmd);
 char		**create_arg_list(t_token *current_token);
-char	*check_if_executable(char **paths);
+char		*check_if_executable(char **paths);
 // -----------------------------
 // Inicjalizacja środowiska
 // -----------------------------
@@ -180,11 +181,6 @@ int			is_assignment(char *line, int start);
 void		handle_sigint(int sig);
 void		handle_sigquit(int sig);
 void		setup_signals(void);
-// -----------------------------
-// debug
-// -----------------------------
-void		print_segments(t_segment *segment);
-void		print_tokens(t_token *tokens);
 // -----------------------------
 // error handler
 // -----------------------------

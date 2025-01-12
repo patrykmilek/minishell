@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 17:19:12 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/04 18:48:57 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/12 12:49:15 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	parse_tokens(t_shell *shell)
 
 	head = NULL;
 	current_segment = NULL;
-	current_token = shell->tokens;
+	current_token = *shell->tokens;
 	while (current_token)
 	{
 		if (current_token->type == PIPE

@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 18:31:12 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/28 19:07:03 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/12 12:46:55 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	handle_error(const char *error_msg, t_shell *shell)
 	}
 	if (shell)
 	{
-		free_tokens(&shell->tokens);
+		free_tokens(shell->tokens);
 		free_segments(shell->segment);
 		free_env(shell->env);
 	}

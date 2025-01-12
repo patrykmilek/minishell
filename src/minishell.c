@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:10 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/04 20:12:11 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/12 13:01:58 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-static t_shell	*init_shell(void)
+static t_shell	*init_shell(int shell_layer)
 {
 	t_shell	*shell;
 
@@ -26,25 +26,27 @@ static t_shell	*init_shell(void)
 		return (NULL);
 	shell->env = NULL;
 	shell->tokens = NULL;
+	shell->segment = NULL;
 	shell->is_child = 0;
 	shell->pid = -1;
+	shell->shell_layer = shell_layer;
 	return (shell);
 }
 
-void free_tokens(t_token **tokens)
+void	free_tokens(t_token **tokens)
 {
-    int i = 0;
+	int	i;
 
-    if (!tokens)
-        return;
-
-    while (tokens[i])
-    {
-        free(tokens[i]->value);
-        free(tokens[i]);
-        i++;
-    }
-    free(tokens);
+	i = 0;
+	if (!tokens)
+		return ;
+	while (tokens[i])
+	{
+		free(tokens[i]->value);
+		free(tokens[i]);
+		i++;
+	}
+	free(tokens);
 }
 
 void	free_env(t_env *env)
@@ -61,83 +63,120 @@ void	free_env(t_env *env)
 	}
 }
 
-int main(int argc, char **argv, char **envp)
+static void	cleanup_shell(t_shell *shell)
 {
-    char    *input;
-    t_shell *shell;
-    t_token **tokens = NULL;
-
-    (void)argc;
-    (void)argv;
-    shell = init_shell();
-    if (!shell)
-    {
-        perror("Failed to initialize shell");
-        return (1);
-    }
-
-    init_env(shell, envp);
-    setup_signals();
-
-    while (1)
-{
-    input = readline("minishell> ");
-    if (!input)
-    {
-        write(1, "exit\n", 5);
-        break;
-    }
-
-    while (has_unclosed_quotes(input))
-    {
-        char *continuation = readline("> ");
-        if (!continuation)
-        {
-            ft_putendl_fd("minishell: unexpected EOF while looking for matching quote", STDERR_FILENO);
-            free(input);
-            break;
-        }
-
-        char *tmp = ft_strjoin(input, "\n");
-        free(input);
-        input = ft_strjoin(tmp, continuation);
-        free(tmp);
-        free(continuation);
-    }
-
-    if (!input)
-        continue;
-
-    if (*input)
-        add_history(input);
-
-    trim_newline(input);
-    tokens = tokenize_input(input);
-
-    free(input);
-
-    if (!tokens)
-        continue;
-
-    shell->tokens = *tokens;
-
-    if (execute_commands(shell, tokens) == 2)
-        break;
-
-    free_tokens(tokens);
-    tokens = NULL;
-
-    free_segments(shell->segment);
-    shell->segment = NULL;
+	if (!shell)
+		return ;
+	free_env(shell->env);
+	free_tokens(shell->tokens);
+	free_segments(shell->segment);
+	free(shell);
 }
 
-    if (tokens)
-        free_tokens(tokens);
-    if (shell->segment)
-        free_segments(shell->segment);
+static char	*generate_layered_prompt(int shell_layer)
+{
+	char	*layer_str;
+	char	*temp1;
+	char	*temp2;
+	char	*prompt;
 
-    free_env(shell->env);
-    free(shell);
-    return (0);
+	layer_str = ft_itoa(shell_layer);
+	if (!layer_str)
+		return (NULL);
+	temp1 = ft_strjoin("minishell[", layer_str);
+	free(layer_str);
+	if (!temp1)
+		return (NULL);
+	temp2 = ft_strjoin(temp1, "]> ");
+	free(temp1);
+	if (!temp2)
+		return (NULL);
+	prompt = temp2;
+	return (prompt);
 }
 
+char	*generate_prompt(int shell_layer)
+{
+	char	*prompt;
+
+	if (shell_layer == 0)
+	{
+		prompt = ft_strjoin("minishell", "> ");
+		if (!prompt)
+			return (NULL);
+	}
+	else
+	{
+		prompt = generate_layered_prompt(shell_layer);
+		if (!prompt)
+			return (NULL);
+	}
+	return (prompt);
+}
+
+static int	initialize_shell(int argc, char **argv,
+	t_shell **shell, char **envp)
+{
+	int	shell_layer;
+
+	if (argc > 1 && argv[1])
+		shell_layer = ft_atoi(argv[1]);
+	else
+		shell_layer = 0;
+	*shell = init_shell(shell_layer);
+	if (!*shell)
+	{
+		perror("Failed to initialize shell");
+		return (EXIT_FAILURE);
+	}
+	init_env(*shell, envp);
+	setup_signals();
+	return (0);
+}
+
+static char	*get_user_input(t_shell *shell)
+{
+	char	*prompt;
+	char	*input;
+
+	prompt = generate_prompt(shell->shell_layer);
+	input = readline(prompt);
+	free(prompt);
+	return (input);
+}
+
+static int	handle_user_input(t_shell *shell, char *input)
+{
+	if (!input)
+	{
+		write(1, "exit\n", 5);
+		return (1);
+	}
+	if (*input)
+		add_history(input);
+	trim_newline(input);
+	shell->tokens = tokenize_input(input);
+	free(input);
+	if (!shell->tokens)
+		return (0);
+	return (execute_commands(shell, shell->tokens));
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_shell	*shell;
+	char	*input;
+	int		exit_status;
+
+	if (initialize_shell(argc, argv, &shell, envp) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
+	while (1)
+	{
+		input = get_user_input(shell);
+		exit_status = handle_user_input(shell, input);
+		if (exit_status == 1 || exit_status == 2)
+			break ;
+	}
+	cleanup_shell(shell);
+	return (0);
+}
