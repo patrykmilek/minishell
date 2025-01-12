@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   minishell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:10 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/12 15:59:24 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/12 17:14:11 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,29 +22,20 @@ char	*generate_prompt(int shell_layer)
 	char	*prompt;
 
 	if (shell_layer == 0)
-	{
-		prompt = ft_strjoin("minishell", "> ");
-		if (!prompt)
-			return (NULL);
-	}
+		prompt = ft_strdup("minishell> ");
 	else
-	{
-		prompt = generate_layered_prompt(shell_layer);
-		if (!prompt)
-			return (NULL);
-	}
+		prompt = ft_strdup("> ");
 	return (prompt);
 }
 
 static int	initialize_shell(int argc, char **argv,
-	t_shell **shell, char **envp)
+					t_shell **shell, char **envp)
 {
 	int	shell_layer;
 
+	shell_layer = 0;
 	if (argc > 1 && argv[1])
 		shell_layer = ft_atoi(argv[1]);
-	else
-		shell_layer = 0;
 	*shell = init_shell(shell_layer);
 	if (!*shell)
 	{
@@ -58,12 +49,25 @@ static int	initialize_shell(int argc, char **argv,
 
 static char	*get_user_input(t_shell *shell)
 {
-	char	*prompt;
 	char	*input;
+	char	*line;
+	char	*temp_prompt;
 
-	prompt = generate_prompt(shell->shell_layer);
-	input = readline(prompt);
-	free(prompt);
+	input = readline(generate_prompt(shell->shell_layer));
+	while (input && has_unclosed_quotes(input))
+	{
+		temp_prompt = ft_strdup("> ");
+		line = readline(temp_prompt);
+		free(temp_prompt);
+		if (!line)
+		{
+			free(input);
+			return (NULL);
+		}
+		input = ft_strjoin(input, "\n");
+		input = ft_strjoin(input, line);
+		free(line);
+	}
 	return (input);
 }
 
