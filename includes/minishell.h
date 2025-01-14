@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 13:45:18 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/12 15:59:02 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/14 11:49:35 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,33 @@
 
 # define NONE 0
 
+// -----------------------------
+// Typy tokenów
+// -----------------------------
+
+typedef enum e_token_type
+{
+	COMMAND,
+	ARGUMENT,
+	PIPE,
+	REDIR_IN,
+	REDIR_OUT,
+	HEREDOC,
+	APPEND
+}	t_token_type;
+
+typedef struct s_redir
+{
+	t_token_type	type;
+	char			*filename;
+	struct s_redir	*next;	
+}	t_redir;
+
 typedef struct s_segment
 {
 	char				*command;
 	char				**args;
-	int					redir;
-	char				*redir_target;
+	t_redir				*redir_list;
 	int					relation;
 	struct s_segment	*next;
 }	t_segment;
@@ -46,20 +67,6 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-// -----------------------------
-// Typy tokenów
-// -----------------------------
-
-typedef enum e_token_type
-{
-	COMMAND,
-	ARGUMENT,
-	PIPE,
-	REDIR_IN,
-	REDIR_OUT,
-	HEREDOC,
-	APPEND
-}	t_token_type;
 // -----------------------------
 // Struktura tokena
 // -----------------------------
@@ -138,7 +145,6 @@ char		**combine_arguments(char **args, char *cmd);
 void		free_list(char **envp);
 char		*prepare_executable(t_shell *shell, char *cmd, char ***paths);
 int			execute_binary(char *path, char **argument, char **envp);
-
 // -----------------------------
 // Wykonywanie poleceń
 // -----------------------------
@@ -176,6 +182,7 @@ int			has_unclosed_quotes(char *line);
 int			validate_line_start(char *line, t_token **tokens, int count);
 void		free_token_array(t_token **tokens, int count);
 int			is_assignment(char *line, int start);
+void		process_redirections(t_segment *segment, t_token **current_token);
 // -----------------------------
 // Signals
 // -----------------------------

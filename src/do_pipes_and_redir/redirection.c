@@ -6,71 +6,67 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 22:30:20 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/29 13:32:41 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/14 11:45:51 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	**append_arg(char **args, char *arg)
+static void	handle_input_redirection(const char *filename)
 {
-	int		i;
-	char	**new_args;
+	int	fd;
 
-	i = 0;
-	while (args && args[i])
-		i++;
-	new_args = malloc((i + 2) * sizeof(char *));
-	if (!new_args)
-		return (NULL);
-	i = 0;
-	while (args && args[i])
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
 	{
-		new_args[i] = args[i];
-		i++;
-	}
-	new_args[i++] = ft_strdup(arg);
-	new_args[i] = NULL;
-	free(args);
-	return (new_args);
-}
-
-static int	open_redirection_file(t_segment *segment)
-{
-	int	redir_fd;
-
-	if (segment->redir == REDIR_OUT)
-		redir_fd = open(segment->redir_target, O_WRONLY
-				| O_CREAT | O_TRUNC, 0644);
-	else if (segment->redir == APPEND)
-		redir_fd = open(segment->redir_target, O_WRONLY
-				| O_CREAT | O_APPEND, 0644);
-	else if (segment->redir == REDIR_IN)
-		redir_fd = open(segment->redir_target, O_RDONLY);
-	else
-		return (-1);
-	if (redir_fd == -1)
-	{
-		perror("open failed");
+		perror(filename);
 		exit(EXIT_FAILURE);
 	}
-	return (redir_fd);
+	if (dup2(fd, STDIN_FILENO) < 0)
+	{
+		perror("dup2");
+		exit(EXIT_FAILURE);
+	}
+	close(fd);
+}
+
+static void	handle_output_redirection(const char *filename, int flags)
+{
+	int	fd;
+
+	fd = open(filename, flags, 0644);
+	if (fd < 0)
+	{
+		perror(filename);
+		exit(EXIT_FAILURE);
+	}
+	if (dup2(fd, STDOUT_FILENO) < 0)
+	{
+		perror("dup2");
+		exit(EXIT_FAILURE);
+	}
+	close(fd);
 }
 
 void	handle_redirection(t_segment *segment)
 {
-	int	redir_fd;
+	t_redir	*redir;
 
-	if (segment->redir == NONE)
-		return ;
-	redir_fd = open_redirection_file(segment);
-	if (redir_fd < 0)
-		return ;
-	if (segment->redir == REDIR_OUT || segment->redir == APPEND)
-		dup2(redir_fd, STDOUT_FILENO);
-	else if (segment->redir == REDIR_IN)
-		dup2(redir_fd, STDIN_FILENO);
-	close(redir_fd);
+	redir = segment->redir_list;
+	while (redir)
+	{
+		if (redir->type == REDIR_IN)
+			handle_input_redirection(redir->filename);
+		else if (redir->type == REDIR_OUT)
+			handle_output_redirection(redir->filename,
+				O_WRONLY | O_CREAT | O_TRUNC);
+		else if (redir->type == APPEND)
+			handle_output_redirection(redir->filename,
+				O_WRONLY | O_CREAT | O_APPEND);
+		else if (redir->type == HEREDOC)
+			handle_input_redirection(redir->filename);
+		redir = redir->next;
+	}
 }
 
 void	redirect_io(t_fork_data *data)

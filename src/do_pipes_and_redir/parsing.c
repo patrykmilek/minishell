@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 17:19:12 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/12 12:49:15 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/14 11:48:11 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,6 @@ void	process_arguments(t_segment *segment, t_token **current_token)
 	{
 		segment->args = append_arg(segment->args, (*current_token)->value);
 		*current_token = (*current_token)->next;
-	}
-}
-
-void	process_redirections(t_segment *segment, t_token **current_token)
-{
-	while (*current_token && ((*current_token)->type == REDIR_IN
-			|| (*current_token)->type == REDIR_OUT
-			|| (*current_token)->type == APPEND
-			|| (*current_token)->type == HEREDOC))
-	{
-		segment->redir = (*current_token)->type;
-		*current_token = (*current_token)->next;
-		if (*current_token && (*current_token)->type == ARGUMENT)
-		{
-			segment->redir_target = ft_strdup((*current_token)->value);
-			*current_token = (*current_token)->next;
-		}
 	}
 }
 

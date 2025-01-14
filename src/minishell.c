@@ -19,12 +19,25 @@
 
 char	*generate_prompt(int shell_layer)
 {
+	char	*layer_str;
+	char	*temp1;
+	char	*temp2;
 	char	*prompt;
 
 	if (shell_layer == 0)
-		prompt = ft_strdup("minishell> ");
-	else
-		prompt = ft_strdup("> ");
+		return (ft_strdup("minishell> "));
+	layer_str = ft_itoa(shell_layer);
+	if (!layer_str)
+		return (NULL);
+	temp1 = ft_strjoin("minishell[", layer_str);
+	free(layer_str);
+	if (!temp1)
+		return (NULL);
+	temp2 = ft_strjoin(temp1, "]> ");
+	free(temp1);
+	if (!temp2)
+		return (NULL);
+	prompt = temp2;
 	return (prompt);
 }
 
