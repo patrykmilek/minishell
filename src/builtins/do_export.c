@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:29 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/14 19:16:12 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/14 19:37:00 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,10 @@ static void	extract_key_and_value(char *str, char **key, char **value)
 	else
 	{
 		*key = ft_strdup(str);
-		*value = NULL;
+		if (*key)
+			*value = ft_strdup("");
+		else
+			*value = NULL;
 	}
 }
 
