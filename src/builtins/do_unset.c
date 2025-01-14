@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:32 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/28 23:14:50 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/14 19:21:02 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	do_unset(t_shell *shell, char **args)
 	i = 0;
 	while (args[i])
 	{
-		if (!check_key(args[i]))
+		if (check_key(args[i]))
 		{
 			ft_putstr_fd("unset: not a valid identifier: ", STDERR_FILENO);
 			ft_putendl_fd(args[i], STDERR_FILENO);

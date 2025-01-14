@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:50 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/12 13:04:43 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/14 19:12:45 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,11 @@ int	execute_commands(t_shell *shell, t_token **tokens)
 	}
 	if (ft_strcmp(shell->segment->command, "exit") == 0)
 		return (2);
-	if (!shell->segment->relation && is_parent_builtin(shell->segment->command))
+	if (!shell->segment->relation && is_parent_builtin(shell->segment->command) == 1)
+	{
+		printf("\nbreakpoing\n\n");
 		execute_parent_builtin(shell);
+	}
 	else
 		execute_segments(shell);
 	free_segments(shell->segment);

@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:29 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/29 13:00:20 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/14 19:16:12 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	add_new_node(t_shell *shell, char *key, char *value)
 {
 	t_env	*new_node;
 
-	if (!init_new_node(&new_node, key, value))
+	if (init_new_node(&new_node, key, value))
 		return (1);
 	add_node_to_env(shell, new_node);
 	return (0);
@@ -62,7 +62,7 @@ void	update_or_add_env(t_shell *shell, char *str)
 	char	*value;
 
 	extract_key_and_value(str, &key, &value);
-	if (!key || !check_key(key))
+	if (!key || check_key(key))
 	{
 		ft_putstr_fd("export: not a valid identifier: ", STDERR_FILENO);
 		ft_putendl_fd(str, STDERR_FILENO);
@@ -89,7 +89,7 @@ int	do_export(t_shell *shell, char **args)
 	char	**tab;
 	int		i;
 
-	if (args[0] == NULL)
+	if (!args || !args[0])
 	{
 		tab = sort_env(shell);
 		if (!tab)
@@ -100,7 +100,7 @@ int	do_export(t_shell *shell, char **args)
 	i = 0;
 	while (args[i])
 	{
-		if (!check_forbidden_sign(args[i]))
+		if (check_forbidden_sign(args[i]))
 		{
 			ft_putstr_fd("export: not a valid identifier: ", STDERR_FILENO);
 			ft_putendl_fd(args[i], STDERR_FILENO);

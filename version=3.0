@@ -96,3 +96,6 @@ version 2.8
 
 version 2.9
 	naprawilem redirekcje
+	
+version 3.0
+	naprawilem export i unset

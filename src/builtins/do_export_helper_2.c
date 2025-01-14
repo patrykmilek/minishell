@@ -6,7 +6,7 @@
 /*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:25 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2024/12/28 23:13:04 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/14 19:19:00 by kubapyciarz      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	update_env_value(t_env *current, char *key, char *value)
 
 void	add_env_variable(t_shell *shell, char *key, char *value)
 {
-	if (!add_new_node(shell, key, value))
+	if (add_new_node(shell, key, value))
 	{
 		ft_putendl_fd("export: failed to add new node", STDERR_FILENO);
 		free(key);
