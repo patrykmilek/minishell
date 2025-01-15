@@ -1,0 +1,10 @@
+> - wpisanie tego zle dziala
+pwd -s - zle dziala
+unset TEST_VAR & echo $TEST_VAR - zle dziala
+ls | grep | wc -l - segmentation
+echo "multi line\ntext" | wc -l - zacina program
+cat < nonexistentfile - zacina program
+| wc -l - wyrzuca program
+echo "This is 'nested quotes'" > file.txt - zle dziala
+ls | > output.txt - zle dziala
+echo "test" | - zle dziala
