@@ -19,13 +19,15 @@
 
 char	*generate_prompt(int shell_layer)
 {
-	char	*layer_str;
-	char	*temp1;
-	char	*temp2;
-	char	*prompt;
+	static char	*previous_prompt = NULL;
+	char		*layer_str;
+	char		*temp1;
+	char		*temp2;
 
+	if (previous_prompt)
+		free(previous_prompt);
 	if (shell_layer == 0)
-		return (ft_strdup("minishell> "));
+		return (previous_prompt = ft_strdup("minishell> "));
 	layer_str = ft_itoa(shell_layer);
 	if (!layer_str)
 		return (NULL);
@@ -35,14 +37,11 @@ char	*generate_prompt(int shell_layer)
 		return (NULL);
 	temp2 = ft_strjoin(temp1, "]> ");
 	free(temp1);
-	if (!temp2)
-		return (NULL);
-	prompt = temp2;
-	return (prompt);
+	return (previous_prompt = temp2);
 }
 
 static int	initialize_shell(int argc, char **argv,
-					t_shell **shell, char **envp)
+			t_shell **shell, char **envp)
 {
 	int	shell_layer;
 
@@ -65,6 +64,7 @@ static char	*get_user_input(t_shell *shell)
 	char	*input;
 	char	*line;
 	char	*temp_prompt;
+	char	*temp;
 
 	input = readline(generate_prompt(shell->shell_layer));
 	while (input && has_unclosed_quotes(input))
@@ -77,8 +77,12 @@ static char	*get_user_input(t_shell *shell)
 			free(input);
 			return (NULL);
 		}
+		temp = input;
 		input = ft_strjoin(input, "\n");
+		free(temp);
+		temp = input;
 		input = ft_strjoin(input, line);
+		free(temp);
 		free(line);
 	}
 	return (input);

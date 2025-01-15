@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:50 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/14 19:31:42 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/15 18:49:44 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,9 @@ int	is_builtin_command(char *cmd)
 		|| ft_strcmp(cmd, "env") == 0 || ft_strcmp(cmd, "cd") == 0
 		|| ft_strcmp(cmd, "export") == 0 || ft_strcmp(cmd, "unset") == 0)
 		return (1);
-	else if (ft_strcmp(cmd, "exit"))
+	if (ft_strcmp(cmd, "exit") == 0)
 		return (2);
 	return (0);
-}
-
-static void	free_args(char **args)
-{
-	int		i;
-
-	i = 0;
-	if (!args)
-		return ;
-	while (args[i])
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
 }
 
 int	do_command(t_shell *shell, t_token *current_token)
@@ -54,7 +39,8 @@ int	do_command(t_shell *shell, t_token *current_token)
 		}
 		if (do_builtins(shell, current_token, args) == 0)
 		{
-			ft_putendl_fd("blad", STDERR_FILENO);
+			ft_putendl_fd("Error", STDERR_FILENO);
+			free_args(args);
 			return (1);
 		}
 	}
@@ -74,11 +60,11 @@ static void	execute_parent_builtin(t_shell *shell)
 
 int	execute_commands(t_shell *shell, t_token **tokens)
 {
-	(void)tokens;
 	parse_tokens(shell);
 	if (!shell->segment || !shell->segment->command)
 	{
-		ft_putendl_fd("-bash: command not found", STDERR_FILENO);
+		free_tokens(tokens);
+		ft_putendl_fd("-minishell: command not found", STDERR_FILENO);
 		return (0);
 	}
 	if (ft_strcmp(shell->segment->command, "exit") == 0)
@@ -90,5 +76,6 @@ int	execute_commands(t_shell *shell, t_token **tokens)
 		execute_segments(shell);
 	free_segments(shell->segment);
 	shell->segment = NULL;
+	free_tokens(tokens);
 	return (0);
 }

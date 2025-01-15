@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   define_and_free_segments.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 11:40:32 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/14 11:45:57 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/15 18:12:09 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ char	**append_arg(char **args, char *arg)
 		i++;
 	new_args = malloc((i + 2) * sizeof(char *));
 	if (!new_args)
+	{
+		free_args(args);
 		return (NULL);
+	}
 	i = 0;
 	while (args && args[i])
 	{
@@ -50,7 +53,7 @@ static void	free_redirections(t_redir *redir_list)
 	}
 }
 
-static void	free_args(char **args)
+void	free_args(char **args)
 {
 	int	i;
 

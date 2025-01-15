@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 13:45:18 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/14 11:49:35 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/15 17:44:10 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ int			execute_commands(t_shell *shell, t_token **tokens);
 int			is_builtin_command(char *cmd);
 char		**create_arg_list(t_token *current_token);
 char		*check_if_executable(char **paths);
+void		free_args(char **args);
 // -----------------------------
 // Inicjalizacja środowiska
 // -----------------------------

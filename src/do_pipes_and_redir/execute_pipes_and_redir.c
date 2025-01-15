@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 17:45:54 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/04 19:47:27 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/15 18:10:51 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,10 @@ int	execute_segments(t_shell *shell)
 		return (0);
 	child_pids = init_fork(shell, segment_count);
 	if (!child_pids)
+	{
+		free_segments(shell->segment);
 		return (EXIT_FAILURE);
+	}
 	i = 0;
 	while (i < segment_count)
 		waitpid(child_pids[i++], NULL, 0);

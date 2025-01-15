@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 17:19:12 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/14 11:48:11 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/15 18:09:23 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,17 @@ void	process_command(t_segment *segment, t_token **current_token)
 
 void	process_arguments(t_segment *segment, t_token **current_token)
 {
+	char	**temp;
+
 	while (*current_token && (*current_token)->type == ARGUMENT)
 	{
+		temp = segment->args;
 		segment->args = append_arg(segment->args, (*current_token)->value);
+		if (!segment->args)
+		{
+			free_args(temp);
+			return ;
+		}
 		*current_token = (*current_token)->next;
 	}
 }
@@ -63,6 +71,7 @@ void	parse_tokens(t_shell *shell)
 			&& (!current_token->next || current_token->next->type == PIPE))
 		{
 			ft_putendl_fd("-bash: syntax error near unexpected token `|'", 2);
+			free_segments(head);
 			shell->segment = NULL;
 			return ;
 		}

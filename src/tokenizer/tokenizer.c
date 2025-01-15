@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 10:00:00 by pmilek            #+#    #+#             */
-/*   Updated: 2025/01/04 20:03:56 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/15 18:03:39 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	handle_quoted_token(t_token **tokens,
 }
 
 static void	handle_assignment_token(t_token **tokens,
-			int *count, char *line, int *i)
+		int *count, char *line, int *i)
 {
 	int		start;
 	char	*assignment;
@@ -90,8 +90,16 @@ t_token	**tokenize_input(char *line)
 	if (!tokens)
 		return (NULL);
 	if (!validate_line_start(line, tokens, count))
+	{
+		free_token_array(tokens, count);
 		return (NULL);
+	}
 	process_line(line, tokens, &count, &i);
+	if (count == 0)
+	{
+		free(tokens);
+		return (NULL);
+	}
 	tokens[count] = NULL;
 	link_tokens(tokens);
 	return (tokens);

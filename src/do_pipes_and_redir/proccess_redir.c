@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   proccess_redir.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kubapyciarz <kubapyciarz@student.42.fr>    +#+  +:+       +#+        */
+/*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 11:48:25 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/14 11:48:43 by kubapyciarz      ###   ########.fr       */
+/*   Updated: 2025/01/15 18:50:27 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,7 @@ static void	add_redirection_to_list(t_redir **redir_list, t_redir *new_redir)
 static int	is_valid_redirection(t_token **current_token)
 {
 	if (!(*current_token) || (*current_token)->type != ARGUMENT)
-	{
-		ft_putendl_fd("Syntax error: expected filename after redirection",
-			STDERR_FILENO);
 		return (0);
-	}
 	return (1);
 }
 
@@ -65,8 +61,7 @@ void	process_redirections(t_segment *segment, t_token **current_token)
 	t_token_type	redir_type;
 	t_redir			*new_redir;
 
-	while (*current_token
-		&& ((*current_token)->type == REDIR_IN
+	while (*current_token && ((*current_token)->type == REDIR_IN
 			|| (*current_token)->type == REDIR_OUT
 			|| (*current_token)->type == APPEND
 			|| (*current_token)->type == HEREDOC))
