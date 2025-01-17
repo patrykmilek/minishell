@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/28 17:19:12 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/15 18:09:23 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/17 20:31:55 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,16 @@ void	process_segment(t_token **current_token,
 	t_segment	*new_segment;
 
 	new_segment = init_segment();
+	if (!new_segment)
+		return ;
 	process_command(new_segment, current_token);
 	process_arguments(new_segment, current_token);
 	process_redirections(new_segment, current_token);
+	if (!new_segment->command && !new_segment->args && !new_segment->redir_list)
+	{
+		free_segments(new_segment);
+		return ;
+	}
 	if (!(*head))
 		*head = new_segment;
 	else
@@ -70,7 +77,7 @@ void	parse_tokens(t_shell *shell)
 		if (current_token->type == PIPE
 			&& (!current_token->next || current_token->next->type == PIPE))
 		{
-			ft_putendl_fd("-bash: syntax error near unexpected token `|'", 2);
+			ft_putendl_fd("ms: error near unexpected token `|'", STDERR_FILENO);
 			free_segments(head);
 			shell->segment = NULL;
 			return ;

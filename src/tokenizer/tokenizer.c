@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 10:00:00 by pmilek            #+#    #+#             */
-/*   Updated: 2025/01/15 18:03:39 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/17 20:34:21 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,9 +89,9 @@ t_token	**tokenize_input(char *line)
 	tokens = malloc(sizeof(t_token *) * 1024);
 	if (!tokens)
 		return (NULL);
-	if (!validate_line_start(line, tokens, count))
+	if (!validate_line_start(line))
 	{
-		free_token_array(tokens, count);
+		free(tokens);
 		return (NULL);
 	}
 	process_line(line, tokens, &count, &i);

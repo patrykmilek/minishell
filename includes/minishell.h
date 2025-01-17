@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 13:45:18 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/15 17:44:10 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/17 20:17:24 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ char		*extract_word(char *line, int *i);
 int			determine_token_type(t_token **tokens, int count);
 char		*extract_quoted_word(char *line, int *i);
 int			has_unclosed_quotes(char *line);
-int			validate_line_start(char *line, t_token **tokens, int count);
+int			validate_line_start(char *line);
 void		free_token_array(t_token **tokens, int count);
 int			is_assignment(char *line, int start);
 void		process_redirections(t_segment *segment, t_token **current_token);

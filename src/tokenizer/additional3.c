@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 10:00:00 by pmilek            #+#    #+#             */
-/*   Updated: 2025/01/04 20:05:45 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/17 20:33:57 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,15 @@ void	free_token_array(t_token **tokens, int count)
 {
 	int	i;
 
+	if (!tokens)
+		return ;
 	i = 0;
 	while (i < count)
 	{
 		if (tokens[i])
 		{
-			free(tokens[i]->value);
+			if (tokens[i]->value)
+				free(tokens[i]->value);
 			free(tokens[i]);
 		}
 		i++;
@@ -29,12 +32,16 @@ void	free_token_array(t_token **tokens, int count)
 	free(tokens);
 }
 
-int	validate_line_start(char *line, t_token **tokens, int count)
+int	validate_line_start(char *line)
 {
-	if (line[0] == '|')
+	if (!line || line[0] == '|')
 	{
 		ft_putendl_fd("ms: error near unexpected token `|'", STDERR_FILENO);
-		free_token_array(tokens, count);
+		return (0);
+	}
+	if (line[ft_strlen(line) - 1] == '|')
+	{
+		ft_putendl_fd("ms: error near unexpected token `|'", STDERR_FILENO);
 		return (0);
 	}
 	return (1);

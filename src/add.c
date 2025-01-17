@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/12 15:44:59 by pmilek            #+#    #+#             */
-/*   Updated: 2025/01/15 17:55:53 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/17 20:18:35 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,21 @@ void	cleanup_shell(t_shell *shell)
 {
 	if (!shell)
 		return ;
-	free_env(shell->env);
-	free_tokens(shell->tokens);
-	free_segments(shell->segment);
-	rl_clear_history();
+	if (shell->tokens)
+	{
+		free_tokens(shell->tokens);
+		shell->tokens = NULL;
+	}
+	if (shell->segment)
+	{
+		free_segments(shell->segment);
+		shell->segment = NULL;
+	}
+	if (shell->env)
+	{
+		free_env(shell->env);
+		shell->env = NULL;
+	}
 	free(shell);
 }
 

@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/14 11:40:32 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/15 18:12:09 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/17 20:25:25 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,17 @@ char	**append_arg(char **args, char *arg)
 	return (new_args);
 }
 
-static void	free_redirections(t_redir *redir_list)
+void	free_redirections(t_redir *redir_list)
 {
-	t_redir	*r;
-	t_redir	*r_next;
+	t_redir	*temp;
 
-	r = redir_list;
-	while (r)
+	while (redir_list)
 	{
-		r_next = r->next;
-		free(r->filename);
-		free(r);
-		r = r_next;
+		temp = redir_list;
+		redir_list = redir_list->next;
+		if (temp->filename)
+			free(temp->filename);
+		free(temp);
 	}
 }
 
@@ -78,8 +77,10 @@ void	free_segments(t_segment *segments)
 		segments = segments->next;
 		if (temp_seg->command)
 			free(temp_seg->command);
-		free_args(temp_seg->args);
-		free_redirections(temp_seg->redir_list);
+		if (temp_seg->args)
+			free_args(temp_seg->args);
+		if (temp_seg->redir_list)
+			free_redirections(temp_seg->redir_list);
 		free(temp_seg);
 	}
 }

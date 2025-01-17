@@ -6,7 +6,7 @@
 /*   By: pmilek <pmilek@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 22:39:50 by kubapyciarz       #+#    #+#             */
-/*   Updated: 2025/01/15 18:49:44 by pmilek           ###   ########.fr       */
+/*   Updated: 2025/01/17 20:33:00 by pmilek           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,11 @@ int	execute_commands(t_shell *shell, t_token **tokens)
 		return (0);
 	}
 	if (ft_strcmp(shell->segment->command, "exit") == 0)
+	{
+		free_segments(shell->segment);
+		shell->segment = NULL;
 		return (2);
+	}
 	if (!shell->segment->relation
 		&& is_parent_builtin(shell->segment->command) == 1)
 		execute_parent_builtin(shell);
